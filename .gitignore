@@ -2,3 +2,6 @@ audio
 align/*
 *.wav
 juliusalign_files/*
+__pycache__
+julius_logs/*
+julius_segment_tmp/*

@@ -6,6 +6,7 @@ import statsmodels.api as sm
 import matplotlib as plt
 import numpy as np
 import warnings
+from typing import List, Tuple
 
 word_map = load_word_map()
 
@@ -37,7 +38,7 @@ def get_pitches_fine_grained(data, sample_rate):
             yield chunk_start, round(sample_rate / strong_peak, 1)
 
 
-def get_avg_syllable_pitches(wav_path, moras):
+def get_avg_syllable_pitches(wav_path, moras) -> List[Tuple[str, float]]:
     data, sr = librosa.load(wav_path)
     onsets_and_pitches = list(get_pitches_fine_grained(data, sr))
     sylls = list(get_syllables_start_end_julius(data, sr, moras))
@@ -59,13 +60,16 @@ def get_avg_syllable_pitches(wav_path, moras):
         except ZeroDivisionError:
             # if no pitch detected, just use previous pitch
             warnings.warn(f"{wav_path}: No pitch detected for {mora}, using same pitch as previous syllable")
-            avg_pitch = avg_pitches[-1][1]
+            if avg_pitches:
+                avg_pitch = avg_pitches[-1][1]
+            else:
+                avg_pitch = 200 #TODO
 
         avg_pitches.append((mora, avg_pitch))
     return avg_pitches
 
 
-def pitch_contour_similarity(expected, pronounced, nucleus_idx):
+def pitch_contour_similarity(expected: List[float], pronounced: List[float], nucleus_idx: int) -> float:
 
     assert len(expected) == len(pronounced)
     score = 0
@@ -114,5 +118,5 @@ if __name__ == "__main__":
         syll_pitches = get_avg_syllable_pitches(wav_path, data["moras"])
         pitches_only = [s[1] for s in syll_pitches]
         expected_pitches = data["pitches"]
-        nucleus_idx = 5
+        nucleus_idx = data["peak"]
         print(word, pitches_only, pitch_contour_similarity(expected_pitches, pitches_only, nucleus_idx))

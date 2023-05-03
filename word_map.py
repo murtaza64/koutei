@@ -1,5 +1,6 @@
 import subprocess
 import json
+from typing import TypedDict, List, Dict
 
 def load_word_map():
     output = subprocess.run([
@@ -17,4 +18,12 @@ def load_word_map():
     ], capture_output=True).stdout
     return json.loads(str(output, 'utf-8'))
 
-word_map = load_word_map()
+class WordData(TypedDict):
+    moras: List[str]
+    pitches: List[float]
+    english: str
+    peak: int
+    category: str
+    furiganaMap: Dict[str, str]
+
+word_map: Dict[str, WordData] = load_word_map()

@@ -6,11 +6,20 @@ def load_word_map():
     output = subprocess.run([
         "node", 
         "-e",
+        # '''
+        # import('/home/murtaza/jpp/wordMap.js').then((module) => 
+        #     console.log(JSON.stringify(
+        #         Object.fromEntries(
+        #             module.default.default("/home/murtaza/jpp/public/words.txt")
+        #         )
+        #     ))
+        # )
+        # '''
         '''
-        import('/home/murtaza/jpp/wordMap.js').then((module) => 
+        import('/mnt/c/Users/perry/JPP_Project/jpp/wordMap.js').then((module) => 
             console.log(JSON.stringify(
                 Object.fromEntries(
-                    module.default.default("/home/murtaza/jpp/public/words.txt")
+                    module.default.default('/mnt/c/Users/perry/JPP_Project/jpp/public/words.txt')
                 )
             ))
         )
